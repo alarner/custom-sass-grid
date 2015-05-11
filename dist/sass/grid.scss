@@ -1,0 +1,45 @@
+@import '_variables';
+
+$full-width: ($number-of-columns*$gutter-to-column-ratio+$number-of-columns+1);
+
+@mixin col($width, $offset) {
+
+	margin: 0 percentage(1/$full-width) $row-spacing percentage(1/$full-width);
+
+	&:last-child {
+		margin-right: percentage(1/$full-width);
+	}
+
+	@media (min-width: $stack-width) {
+		width: percentage(
+			($width*$gutter-to-column-ratio+($width - 1))/$full-width
+		);
+		margin: 0 0 0 percentage(
+			($offset*$gutter-to-column-ratio+($offset+1))/$full-width
+		);
+		float: left;
+	}
+}
+
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+.row {
+	margin-bottom: $row-spacing;
+	overflow: hidden;
+}
+
+@if $generate-convenience-classes {
+	@for $width from 1 through $number-of-columns {
+		.#{$col-prefix}-#{$width} {
+			@include col($width, 0);
+		}
+		@for $offset from 1 through $number-of-columns - $width {
+			.#{$col-prefix}-#{$width}-#{$offset} {
+				@include col($width, $offset);
+			}
+		}
+	}
+}
